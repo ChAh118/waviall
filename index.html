@@ -138,7 +138,7 @@
             <input type="text" name="postal" placeholder="Postal Code">
           </div>
           <div class="note-box">
-            <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available.
+            <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available, Delivery charges will cost from 250 to 300 according to your adress.
           </div>
           <label style="font-size:0.8rem; font-weight:bold;">PAYMENT METHOD</label>
           <select name="payment" id="payMethod" onchange="updatePayDetails()" required>
@@ -180,24 +180,26 @@ const ACCOUNTS = {
   "Bank": "HBL: 1234-5678-9012 (Name: Waviall)"
 };
 
-const PRODUCTS = [
+const products = [
   {
     id: 1,
-    name: "WAVIALL ESSENTIAL TEE",
+    name: "Adidolf 100% pure cotton T-Shirt",
     price: 2500,
-    img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800",
+    img: "./design567.png",
     sizes: ["S", "M", "L", "XL"],
     stock: 24,
-    desc: "A timeless classic. Made from 100% organic cotton, this tee offers a relaxed fit and a soft feel. Perfect for layering or wearing on its own. Designed with durability and minimalist aesthetics in mind."
-  },
-  {
-    id: 2,
-    name: "SIGNATURE HOODIE",
-    price: 4800,
-    img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=800",
-    sizes: ["M", "L", "XL"],
-    stock: 10,
-    desc: "The Signature Hoodie features a heavyweight fleece interior for ultimate warmth. Ribbed cuffs and hem provide a secure fit, while the oversized hood adds a modern edge. A staple for the colder months."
+    desc: `This t-shirt is exactly what you’ve imagined and even better. It’s soft, light, and has the right stretch. It’s comfy and looks good on everyone, plus it’s made of 100% pure cotton.
+
+• Product Type(100% Cotton)
+• Fabric weight: 150-160 gsm
+• Pre-shrunk fabric
+• Side-seamed construction
+• Shoulder-to-shoulder taping
+• Blank product sourced from Pakistan.
+
+This product is made especially for you as soon as you place an order, which is why it takes us a bit longer to deliver it to you. Making products on demand instead of in bulk helps reduce overproduction, so thank you for making thoughtful purchasing decisions!
+
+Note: These Products are manufactured with leftover material, So slight variations in appearance & quality may occur.`
   }
 ];
 
