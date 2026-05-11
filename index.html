@@ -231,7 +231,7 @@ function openProduct(id) {
   activeP = PRODUCTS.find(p => p.id === id);
   document.getElementById('mImg').src = activeP.img;
   document.getElementById('mName').innerText = activeP.name;
-  document.getElementById('mDesc').innerText = activeP.desc;
+  document.getElementById('mDesc').innerHTML = activeP.desc;
   document.getElementById('mStock').innerText = activeP.stock;
   document.getElementById('mPrice').innerText = "RS. " + activeP.price;
   document.getElementById('mSize').innerHTML = activeP.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
