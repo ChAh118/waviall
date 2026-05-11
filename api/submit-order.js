@@ -26,12 +26,8 @@ export default async function handler(req, res) {
       return res.status(400).json({ result: 'error', error: 'Invalid request: no rows provided' });
     }
 
-    // Get your Google Apps Script URL from environment variable
-    const googleScriptUrl = process.env.GOOGLE_SCRIPT_URL;
-    if (!googleScriptUrl) {
-      console.error('GOOGLE_SCRIPT_URL not configured');
-      return res.status(500).json({ result: 'error', error: 'Server configuration error' });
-    }
+    // Use the updated Google Apps Script URL
+    const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzbGYwALpRKJ70LnSYUdcsOj1ZZNHnt1tjWsrPWzT4x7Wdf-qOZ1NtqcQy76eErc36kkA/exec';
 
     // Forward to Google Apps Script
     const response = await fetch(googleScriptUrl, {
