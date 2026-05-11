@@ -34,18 +34,19 @@
   /* MODALS */
   .modal{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; z-index:2000; padding:20px; align-items:center; justify-content:center;}
   .modal.active{display:flex;}
-  .modal-content{background:white; width:100%; max-width:850px; position:relative; padding:0; display:flex; flex-wrap:wrap; animation:slideUp 0.3s ease; max-height: 90vh; overflow: hidden;}
+  
+  .modal-content{background:white; width:100%; max-width:850px; position:relative; padding:0; display:flex; flex-wrap:wrap; animation:slideUp 0.3s ease; max-height: 90vh; overflow-y: auto;}
   @keyframes slideUp{from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1}}
   
   .m-img{flex:1; min-width:300px; height:500px;}
   .m-img img{width:100%; height:100%; object-fit:cover;}
-  .m-details{flex:1; min-width:300px; padding:40px; display:flex; flex-direction:column; max-height:500px; overflow-y:auto;}
+  .m-details{flex:1; min-width:300px; padding:40px; display:flex; flex-direction:column;}
   .close{position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; z-index:10;}
 
   /* FORMS & CART */
   .cart-modal-inner{max-height: 80vh; overflow-y: auto; width: 100%; padding: 30px;}
-  .cart-modal-inner::-webkit-scrollbar {width: 6px;}
-  .cart-modal-inner::-webkit-scrollbar-thumb {background: var(--border); border-radius: 10px;}
+  .cart-modal-inner::-webkit-scrollbar, .modal-content::-webkit-scrollbar {width: 6px;}
+  .cart-modal-inner::-webkit-scrollbar-thumb, .modal-content::-webkit-scrollbar-thumb {background: var(--border); border-radius: 10px;}
 
   #cartList{margin-bottom: 20px;}
   .cart-row{display:flex; align-items:center; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #f9f9f9;}
@@ -67,9 +68,10 @@
   .wa-float{position:fixed; bottom:20px; right:20px; background:#25d366; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:30px; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:999;}
 
   @media (max-width: 600px) {
-    .m-img{height:300px;}
-    .m-details{padding:25px;}
+    .m-img{height:300px; min-width: 100%;}
+    .m-details{padding:25px; min-width: 100%;}
     .hero{height:40vh;}
+    .modal-content{max-height: 95vh;}
   }
 </style>
 </head>
@@ -116,6 +118,7 @@
         </div>
       </div>
       <button class="btn" onclick="addToCart()" style="margin-top:20px;">ADD TO CART</button>
+      <div style="height: 20px;"></div>
     </div>
   </div>
 </div>
@@ -134,11 +137,15 @@
           <input type="text" name="phone" placeholder="WhatsApp / Phone Number" required>
           <input type="text" name="address" placeholder="House #, Street, Area" required>
           <div style="display:flex; gap:10px;">
+            <input type="text" name="country" placeholder="Country" required>
+            <input type="text" name="state" placeholder="State / Province" required>
+          </div>
+          <div style="display:flex; gap:10px;">
             <input type="text" name="city" placeholder="City" required>
             <input type="text" name="postal" placeholder="Postal Code">
           </div>
           <div class="note-box">
-            <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available, Delivery charges will cost from 250 to 300 according to your adress.
+            <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available, Delivery charges will cost according to your given address we will notify you about it.
           </div>
           <label style="font-size:0.8rem; font-weight:bold;">PAYMENT METHOD</label>
           <select name="payment" id="payMethod" onchange="updatePayDetails()" required>
@@ -237,6 +244,7 @@ function openProduct(id) {
   document.getElementById('mSize').innerHTML = activeP.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
   document.getElementById('mQty').value = "1";
   document.getElementById('productModal').classList.add('active');
+  document.querySelector('#productModal .modal-content').scrollTop = 0;
 }
 
 function addToCart() {
