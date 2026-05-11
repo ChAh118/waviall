@@ -32,9 +32,9 @@
   .card-info{padding:20px; text-align:center;}
 
   /* MODALS */
-  .modal{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; z-index:2000; padding:20px; overflow-y:auto; align-items:center; justify-content:center;}
+  .modal{position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); display:none; z-index:2000; padding:20px; align-items:center; justify-content:center;}
   .modal.active{display:flex;}
-  .modal-content{background:white; width:100%; max-width:850px; position:relative; padding:0; display:flex; flex-wrap:wrap; animation:slideUp 0.3s ease;}
+  .modal-content{background:white; width:100%; max-width:850px; position:relative; padding:0; display:flex; flex-wrap:wrap; animation:slideUp 0.3s ease; max-height: 90vh; overflow: hidden;}
   @keyframes slideUp{from{transform:translateY(20px);opacity:0} to{transform:translateY(0);opacity:1}}
   
   .m-img{flex:1; min-width:300px; height:500px;}
@@ -43,10 +43,11 @@
   .close{position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; z-index:10;}
 
   /* FORMS & CART */
-  #cartList{max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; border-bottom: 1px solid #eee;}
-  #cartList::-webkit-scrollbar {width: 6px;}
-  #cartList::-webkit-scrollbar-thumb {background: var(--border); border-radius: 10px;}
-  
+  .cart-modal-inner{max-height: 80vh; overflow-y: auto; width: 100%; padding: 30px;}
+  .cart-modal-inner::-webkit-scrollbar {width: 6px;}
+  .cart-modal-inner::-webkit-scrollbar-thumb {background: var(--border); border-radius: 10px;}
+
+  #cartList{margin-bottom: 20px;}
   .cart-row{display:flex; align-items:center; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #f9f9f9;}
   .cart-row img{width:60px; height:60px; object-fit:cover;}
   .remove-btn{color:var(--danger); background:none; border:none; cursor:pointer; font-size:0.8rem; text-decoration:underline;}
@@ -120,43 +121,41 @@
 </div>
 
 <div id="cartModal" class="modal">
-  <div class="modal-content" style="max-width:500px; padding:30px;">
+  <div class="modal-content" style="max-width:500px;">
     <span class="close" onclick="closeModals()">&times;</span>
-    <h2 style="font-family:serif; margin-bottom:20px;">Your Shopping Bag</h2>
-    <div id="cartList"></div>
-    <div id="checkoutArea" style="display:none; margin-top:20px;">
-      <h3 style="margin-bottom:15px; font-size:1rem; border-top:1px solid #eee; padding-top:20px;">Checkout Details</h3>
-      <form id="orderForm">
-        <input type="text" name="name" placeholder="Full Name" required>
-        <input type="email" name="email" placeholder="Email Address" required>
-        <input type="text" name="phone" placeholder="WhatsApp / Phone Number" required>
-        <input type="text" name="address" placeholder="House #, Street, Area" required>
-        <div style="display:flex; gap:10px;">
-          <input type="text" name="city" placeholder="City" required>
-          <input type="text" name="postal" placeholder="Postal Code">
-        </div>
-        
-        <div class="note-box">
-          <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available.
-        </div>
-
-        <label style="font-size:0.8rem; font-weight:bold;">PAYMENT METHOD</label>
-        <select name="payment" id="payMethod" onchange="updatePayDetails()" required>
-          <option value="">Select Method...</option>
-          <option value="EasyPaisa">EasyPaisa</option>
-          <option value="JazzCash">JazzCash</option>
-          <option value="Bank">Bank Transfer</option>
-        </select>
-        
-        <div id="payDetailsBox" style="background:#f9f9f9; padding:10px; font-size:0.85rem; margin-bottom:15px; display:none; border:1px dashed var(--accent);"></div>
-
-        <button type="submit" class="btn" id="submitBtn">PLACE ORDER</button>
-      </form>
+    <div class="cart-modal-inner" id="cartInner">
+      <h2 style="font-family:serif; margin-bottom:20px;">Your Shopping Bag</h2>
+      <div id="cartList"></div>
+      <div id="checkoutArea" style="display:none; margin-top:20px;">
+        <h3 style="margin-bottom:15px; font-size:1rem; border-top:1px solid #eee; padding-top:20px;">Checkout Details</h3>
+        <form id="orderForm">
+          <input type="text" name="name" placeholder="Full Name" required>
+          <input type="email" name="email" placeholder="Email Address" required>
+          <input type="text" name="phone" placeholder="WhatsApp / Phone Number" required>
+          <input type="text" name="address" placeholder="House #, Street, Area" required>
+          <div style="display:flex; gap:10px;">
+            <input type="text" name="city" placeholder="City" required>
+            <input type="text" name="postal" placeholder="Postal Code">
+          </div>
+          <div class="note-box">
+            <strong>Important:</strong> Due to customization & printing costs, Cash on Delivery is NOT available.
+          </div>
+          <label style="font-size:0.8rem; font-weight:bold;">PAYMENT METHOD</label>
+          <select name="payment" id="payMethod" onchange="updatePayDetails()" required>
+            <option value="">Select Method...</option>
+            <option value="EasyPaisa">EasyPaisa</option>
+            <option value="JazzCash">JazzCash</option>
+            <option value="Bank">Bank Transfer</option>
+          </select>
+          <div id="payDetailsBox" style="background:#f9f9f9; padding:10px; font-size:0.85rem; margin-bottom:15px; display:none; border:1px dashed var(--accent);"></div>
+          <button type="submit" class="btn" id="submitBtn">PLACE ORDER</button>
+        </form>
+      </div>
+      <div style="text-align: center;">
+        <button class="remove-btn" onclick="closeModals()" style="margin-top: 20px; display: inline-block;">Close & Continue Shopping</button>
+      </div>
+      <p style="font-size:0.7rem; text-align:center; margin-top:15px; color:#999;">Any problem? Email us: waviall@gmail.com</p>
     </div>
-    <div style="text-align: center;">
-      <button class="remove-btn" onclick="closeModals()" style="margin-top: 20px; display: inline-block;">Close & Continue Shopping</button>
-    </div>
-    <p style="font-size:0.7rem; text-align:center; margin-top:15px; color:#999;">Any problem? Email us: waviall@gmail.com</p>
   </div>
 </div>
 
@@ -274,6 +273,7 @@ function openCart() {
     checkout.style.display = "block";
   }
   modal.classList.add('active');
+  document.getElementById('cartInner').scrollTop = 0;
 }
 
 function updatePayDetails() {
