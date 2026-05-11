@@ -44,6 +44,9 @@
 
   /* FORMS & CART */
   #cartList{max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; border-bottom: 1px solid #eee;}
+  #cartList::-webkit-scrollbar {width: 6px;}
+  #cartList::-webkit-scrollbar-thumb {background: var(--border); border-radius: 10px;}
+  
   .cart-row{display:flex; align-items:center; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #f9f9f9;}
   .cart-row img{width:60px; height:60px; object-fit:cover;}
   .remove-btn{color:var(--danger); background:none; border:none; cursor:pointer; font-size:0.8rem; text-decoration:underline;}
@@ -149,6 +152,9 @@
 
         <button type="submit" class="btn" id="submitBtn">PLACE ORDER</button>
       </form>
+    </div>
+    <div style="text-align: center;">
+      <button class="remove-btn" onclick="closeModals()" style="margin-top: 20px; display: inline-block;">Close & Continue Shopping</button>
     </div>
     <p style="font-size:0.7rem; text-align:center; margin-top:15px; color:#999;">Any problem? Email us: waviall@gmail.com</p>
   </div>
