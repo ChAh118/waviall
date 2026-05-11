@@ -29,14 +29,29 @@ export default async function handler(req, res) {
     // Use the updated Google Apps Script URL
     const googleScriptUrl = 'https://script.google.com/macros/s/AKfycbzbGYwALpRKJ70LnSYUdcsOj1ZZNHnt1tjWsrPWzT4x7Wdf-qOZ1NtqcQy76eErc36kkA/exec';
 
-    // Forward to Google Apps Script
+    // Forward to Google Apps Script with timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
     const response = await fetch(googleScriptUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ rows }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
+
+    // Check if response is ok
+    if (!response.ok) {
+      console.error(`Google Apps Script returned status ${response.status}`);
+      return res.status(500).json({ 
+        result: 'error', 
+        error: `Google Apps Script error: ${response.status}` 
+      });
+    }
 
     const data = await response.json();
 
@@ -46,7 +61,7 @@ export default async function handler(req, res) {
       return res.status(500).json({ result: 'error', error: data.error || 'Google Apps Script error' });
     }
   } catch (error) {
-    console.error('Order submission error:', error);
+    console.error('Order submission error:', error.message);
     return res.status(500).json({ result: 'error', error: error.message || 'Internal server error' });
   }
 }
