@@ -43,7 +43,8 @@
   .close{position:absolute; top:15px; right:20px; font-size:1.5rem; cursor:pointer; z-index:10;}
 
   /* FORMS & CART */
-  .cart-row{display:flex; align-items:center; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #eee;}
+  #cartList{max-height: 300px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; border-bottom: 1px solid #eee;}
+  .cart-row{display:flex; align-items:center; gap:15px; margin-bottom:15px; padding-bottom:15px; border-bottom:1px solid #f9f9f9;}
   .cart-row img{width:60px; height:60px; object-fit:cover;}
   .remove-btn{color:var(--danger); background:none; border:none; cursor:pointer; font-size:0.8rem; text-decoration:underline;}
 
@@ -57,6 +58,9 @@
   footer{background:white; border-top:1px solid var(--border); padding:60px 5%; text-align:center; margin-top:80px;}
   .footer-links{margin-top:20px;}
   .footer-links a{color:var(--dark); text-decoration:none; margin:0 15px; font-size:0.9rem;}
+
+  /* WHATSAPP FLOAT */
+  .wa-float{position:fixed; bottom:20px; right:20px; background:#25d366; color:white; width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; text-decoration:none; font-size:30px; box-shadow:0 4px 10px rgba(0,0,0,0.2); z-index:999;}
 
   @media (max-width: 600px) {
     .m-img{height:300px;}
@@ -93,9 +97,21 @@
       <p id="mPrice" style="font-weight:bold; color:var(--accent); margin:10px 0;"></p>
       <div id="mDesc" style="font-size:0.95rem; color:#555; margin-bottom:20px;"></div>
       <p style="font-size:0.8rem; margin-bottom:5px;">STOCK LEFT: <span id="mStock"></span></p>
-      <label style="font-size:0.8rem; font-weight:bold;">SELECT SIZE</label>
-      <select id="mSize"></select>
-      <button class="btn" onclick="addToCart()" style="margin-top:auto;">ADD TO CART</button>
+      
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        <div style="flex:2">
+          <label style="font-size:0.7rem; font-weight:bold;">SIZE</label>
+          <select id="mSize"></select>
+        </div>
+        <div style="flex:1">
+          <label style="font-size:0.7rem; font-weight:bold;">QTY</label>
+          <select id="mQty">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+            <option value="4">4</option><option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" onclick="addToCart()" style="margin-top:20px;">ADD TO CART</button>
     </div>
   </div>
 </div>
@@ -106,9 +122,10 @@
     <h2 style="font-family:serif; margin-bottom:20px;">Your Shopping Bag</h2>
     <div id="cartList"></div>
     <div id="checkoutArea" style="display:none; margin-top:20px;">
-      <h3 style="margin-bottom:15px; font-size:1rem; border-top:1px solid #eee; pt:20px;">Checkout Details</h3>
+      <h3 style="margin-bottom:15px; font-size:1rem; border-top:1px solid #eee; padding-top:20px;">Checkout Details</h3>
       <form id="orderForm">
         <input type="text" name="name" placeholder="Full Name" required>
+        <input type="email" name="email" placeholder="Email Address" required>
         <input type="text" name="phone" placeholder="WhatsApp / Phone Number" required>
         <input type="text" name="address" placeholder="House #, Street, Area" required>
         <div style="display:flex; gap:10px;">
@@ -133,6 +150,7 @@
         <button type="submit" class="btn" id="submitBtn">PLACE ORDER</button>
       </form>
     </div>
+    <p style="font-size:0.7rem; text-align:center; margin-top:15px; color:#999;">Any problem? Email us: waviall@gmail.com</p>
   </div>
 </div>
 
@@ -144,6 +162,10 @@
   </div>
   <p style="margin-top:40px; font-size:0.7rem; opacity:0.5;">&copy; 2026 WAVIALL. ALL RIGHTS RESERVED.</p>
 </footer>
+
+<a href="https://wa.me/923001234567" class="wa-float" target="_blank">
+  <span style="font-size:30px;">💬</span>
+</a>
 
 <script>
 const FORMSPREE_ID = "mjgljybb";
@@ -174,7 +196,6 @@ const PRODUCTS = [
   }
 ];
 
-// LOAD CART FROM STORAGE
 let cart = JSON.parse(localStorage.getItem('waviall_cart')) || [];
 
 function saveCart() {
@@ -207,12 +228,14 @@ function openProduct(id) {
   document.getElementById('mStock').innerText = activeP.stock;
   document.getElementById('mPrice').innerText = "RS. " + activeP.price;
   document.getElementById('mSize').innerHTML = activeP.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+  document.getElementById('mQty').value = "1";
   document.getElementById('productModal').classList.add('active');
 }
 
 function addToCart() {
   const size = document.getElementById('mSize').value;
-  cart.push({...activeP, selectedSize: size, cartId: Date.now()});
+  const qty = parseInt(document.getElementById('mQty').value);
+  cart.push({...activeP, selectedSize: size, qty: qty, cartId: Date.now()});
   saveCart();
   closeModals();
 }
@@ -236,8 +259,8 @@ function openCart() {
       <div class="cart-row">
         <img src="${item.img}">
         <div style="flex:1">
-          <p style="font-weight:bold; font-size:0.9rem;">${item.name}</p>
-          <p style="font-size:0.8rem; color:#777;">Size: ${item.selectedSize} | RS. ${item.price}</p>
+          <p style="font-weight:bold; font-size:0.85rem;">${item.name}</p>
+          <p style="font-size:0.75rem; color:#777;">Size: ${item.selectedSize} | Qty: ${item.qty} | RS. ${item.price * item.qty}</p>
           <button class="remove-btn" onclick="removeFromCart(${item.cartId})">Remove</button>
         </div>
       </div>
@@ -269,8 +292,8 @@ document.getElementById('orderForm').onsubmit = async (e) => {
   btn.disabled = true;
 
   const formData = new FormData(e.target);
-  const items = cart.map(i => `${i.name} (${i.selectedSize})`).join(", ");
-  const total = cart.reduce((sum, i) => sum + i.price, 0);
+  const items = cart.map(i => `${i.name} (${i.selectedSize}) x${i.qty}`).join(", ");
+  const total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
   
   formData.append("Items", items);
   formData.append("Total_Amount", "RS. " + total);
