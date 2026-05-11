@@ -4,199 +4,229 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>WAVIALL — Premium Clothing</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👔</text></svg>"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
-
 <style>
-  /* --- WAVIAL STYLING --- */
-  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   :root{
-    --cream:#FAF8F4;--dark:#1A1714;--accent:#8B6F4E;--accent-light:#C4A882;
-    --border:#E8E2D9;--text-muted:#7A7470;--white:#FFFFFF;
-    --success:#2D6A4F;--danger:#C0392B;
+    --cream:#FAF8F4;--dark:#1A1714;--accent:#8B6F4E;--border:#E8E2D9;--white:#FFFFFF;--danger:#C0392B;
   }
-  html{scroll-behavior:smooth}
-  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden}
-
-  nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(250,248,244,0.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;height:64px;display:flex;align-items:center;justify-content:space-between}
-  .logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:500;letter-spacing:0.15em;text-transform:uppercase}
-  .logo span{color:var(--accent)}
-
-  .hero{padding:120px 2rem 60px;text-align:center;background:white;margin-bottom:2rem}
-  .hero-title{font-family:'Cormorant Garamond',serif;font-size:4rem;font-weight:400;line-height:1;margin:1rem 0}
+  body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--dark);margin:0;}
+  nav{position:fixed;top:0;width:100%;background:white;border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;justify-content:space-between;z-index:100;box-sizing:border-box;}
+  .logo{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:bold;letter-spacing:2px;}
   
-  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:2rem;padding:2rem}
-  .product-card{background:white;border:1px solid var(--border);cursor:pointer;transition:0.3s}
-  .product-card:hover{border-color:var(--accent)}
-  .product-img{height:350px;display:flex;align-items:center;justify-content:center;font-size:5rem;background:#fcfcfc}
-  .product-info{padding:1.5rem;text-align:center}
+  .container{max-width:1200px;margin:100px auto;padding:0 20px;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:2rem;}
+  .card{background:white;border:1px solid var(--border);cursor:pointer;transition:0.3s;}
+  .card img{width:100%;height:300px;object-fit:cover;}
+  .card-body{padding:1rem;text-align:center;}
 
-  /* Modal Styling */
-  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:1000}
-  .modal.active{display:flex}
-  .modal-content{background:white;width:90%;max-width:500px;padding:2rem;position:relative}
-  .close-btn{position:absolute;top:1rem;right:1rem;cursor:pointer;font-size:1.5rem}
+  /* Modal */
+  .modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);display:none;z-index:1000;overflow-y:auto;}
+  .modal-content{background:white;max-width:600px;margin:50px auto;padding:2rem;position:relative;}
+  .close{position:absolute;top:10px;right:20px;font-size:2rem;cursor:pointer;}
+  
+  .product-detail-flex{display:flex;gap:20px;flex-wrap:wrap;}
+  .product-detail-flex img{width:200px;height:250px;object-fit:cover;}
+  
+  .cart-item{display:flex;gap:15px;align-items:center;border-bottom:1px solid #eee;padding:10px 0;}
+  .cart-item img{width:60px;height:60px;object-fit:cover;}
 
-  .cart-btn{background:var(--dark);color:white;padding:0.6rem 1.2rem;border:none;cursor:pointer}
-  .checkout-form input, .checkout-form select{width:100%;padding:0.8rem;margin-bottom:1rem;border:1px solid var(--border)}
-  .place-order-btn{background:var(--success);color:white;width:100%;padding:1rem;border:none;font-weight:bold;cursor:pointer}
+  input, select, textarea {width:100%;padding:10px;margin:5px 0 15px;border:1px solid var(--border);}
+  .btn{background:var(--dark);color:white;border:none;padding:12px 20px;width:100%;cursor:pointer;font-weight:bold;}
+  .payment-box{background:#f9f9f9;padding:10px;border-left:4px solid var(--accent);margin:10px 0;display:none;}
 </style>
 </head>
 <body>
 
 <nav>
-  <div class="logo">WAVI<span>A</span>LL</div>
-  <button class="cart-btn" onclick="openCart()">🛍 Cart <span id="cartCount">0</span></button>
+  <div class="logo">WAVIALL</div>
+  <button onclick="openCart()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;">🛒 <span id="cartCount">0</span></button>
 </nav>
 
-<section class="hero">
-  <h1 class="hero-title">Waviall Signature<br><em>Collection.</em></h1>
-  <p>Premium fabric. Perfect fit.</p>
-</section>
-
-<div class="products-grid" id="productsGrid"></div>
+<div class="container">
+  <div class="grid" id="productsGrid"></div>
+</div>
 
 <div id="productModal" class="modal">
   <div class="modal-content">
-    <span class="close-btn" onclick="closeModal()">&times;</span>
-    <div id="modalDetails"></div>
-    <select id="sizeSelect" style="width:100%; padding:10px; margin:10px 0;"></select>
-    <button class="place-order-btn" onclick="addToCart()">Add to Cart</button>
-  </div>
-</div>
-
-<div id="checkoutModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('checkoutModal').classList.remove('active')">&times;</span>
-    <h3>Checkout</h3>
-    <div id="cartItemsList" style="margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;"></div>
-    <div class="checkout-form">
-      <input type="text" id="firstName" placeholder="First Name" required>
-      <input type="text" id="phone" placeholder="WhatsApp Number (e.g. 03001234567)" required>
-      <input type="text" id="address" placeholder="Full Delivery Address" required>
-      <p style="color:var(--danger); font-size:12px; margin-bottom:10px;">
-        * Note: Online Payment only. Cash on Delivery is unavailable due to customization costs.
-      </p>
-      <button class="place-order-btn" onclick="sendWhatsAppOrder()">Send Order via WhatsApp →</button>
+    <span class="close" onclick="closeModals()">&times;</span>
+    <div class="product-detail-flex">
+      <img id="mImg" src="" alt="">
+      <div style="flex:1; min-width:250px;">
+        <h2 id="mName"></h2>
+        <p id="mDesc"></p>
+        <p><strong>Stock Left:</strong> <span id="mStock"></span></p>
+        <p><strong id="mPrice"></strong></p>
+        <label>Select Size:</label>
+        <select id="mSize"></select>
+        <button class="btn" onclick="addToCart()">Add to Cart</button>
+      </div>
     </div>
   </div>
 </div>
 
-<script>
-// --- 1. SET YOUR WHATSAPP NUMBER HERE ---
-const MY_PHONE_NUMBER = "923001234567"; // Use international format without +
+<div id="cartModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModals()">&times;</span>
+    <h3>Your Cart</h3>
+    <div id="cartList"></div>
+    <hr>
+    <h4>Shipping Details</h4>
+    <form id="orderForm">
+      <input type="text" name="name" placeholder="Full Name" required>
+      <input type="text" name="phone" placeholder="Phone Number" required>
+      <input type="text" name="street" placeholder="Street Address / House #" required>
+      <input type="text" name="city" placeholder="City" required>
+      <input type="text" name="province" placeholder="Province / State" required>
+      <input type="text" name="postal" placeholder="Postal Code" required>
+      
+      <label>Payment Method:</label>
+      <select name="payment" id="payMethod" onchange="togglePaymentInfo()" required>
+        <option value="">Choose Method...</option>
+        <option value="EasyPaisa">EasyPaisa</option>
+        <option value="JazzCash">JazzCash</option>
+        <option value="Bank Transfer">Bank Transfer</option>
+      </select>
 
-// --- 2. MANAGE PRODUCTS HERE ---
+      <div id="paymentInfo" class="payment-box">
+        <p id="payDetails"></p>
+        <p style="font-size:0.8rem; color:var(--danger);">* Due to printing costs, COD is not available. Please send the transaction proof to: <strong>waviall@gmail.com</strong></p>
+      </div>
+
+      <button type="submit" class="btn" id="submitBtn">Complete Order</button>
+    </form>
+  </div>
+</div>
+
+<script>
+// --- CONFIG ---
+const FORMSPREE_ID = "YOUR_ID_HERE"; // Get this from formspree.io
+const ACCOUNT_DETAILS = {
+  "EasyPaisa": "03xx-xxxxxxx (Name: Waviall)",
+  "JazzCash": "03xx-xxxxxxx (Name: Waviall)",
+  "Bank Transfer": "HBL 1234-5678-9012 (Name: Waviall)"
+};
+
 const PRODUCTS = [
   {
     id: 1,
-    name: "Linen Overshirt",
-    price: 3200,
-    emoji: "👔",
-    sizes: ["S", "M", "L", "XL"],
-    desc: "Premium 100% linen. Breathable and stylish."
+    name: "Signature Tee",
+    price: 2500,
+    img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500", // replace with your image link
+    sizes: ["S", "M", "L"],
+    stock: 12,
+    desc: "100% premium cotton with waviall minimalist branding."
   },
   {
     id: 2,
-    name: "Premium Kurta",
-    price: 3800,
-    emoji: "🧥",
+    name: "Classic Hoodie",
+    price: 4500,
+    img: "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500",
     sizes: ["M", "L", "XL"],
-    desc: "Luxury cotton lawn with hand-finished details."
-  },
-  // To add more, just copy the block above and change the ID
+    stock: 5,
+    desc: "Heavyweight fleece for maximum comfort."
+  }
 ];
 
 let cart = [];
-let currentPid = null;
 
-function renderProducts() {
+function render() {
   const grid = document.getElementById('productsGrid');
   grid.innerHTML = PRODUCTS.map(p => `
-    <div class="product-card" onclick="openProduct(${p.id})">
-      <div class="product-img">${p.emoji}</div>
-      <div class="product-info">
-        <h3>${p.name}</h3>
-        <p>Rs. ${p.price}</p>
+    <div class="card" onclick="openProduct(${p.id})">
+      <img src="${p.img}">
+      <div class="card-body">
+        <strong>${p.name}</strong><br>Rs. ${p.price}
       </div>
     </div>
   `).join('');
 }
 
+let activeP = null;
 function openProduct(id) {
-  const p = PRODUCTS.find(x => x.id === id);
-  currentPid = id;
-  document.getElementById('modalDetails').innerHTML = `<h2>${p.name}</h2><p>${p.desc}</p><h3>Rs. ${p.price}</h3>`;
-  document.getElementById('sizeSelect').innerHTML = p.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
-  document.getElementById('productModal').classList.add('active');
-}
-
-function closeModal() {
-  document.getElementById('productModal').classList.remove('active');
+  activeP = PRODUCTS.find(p => p.id === id);
+  document.getElementById('mImg').src = activeP.img;
+  document.getElementById('mName').innerText = activeP.name;
+  document.getElementById('mDesc').innerText = activeP.desc;
+  document.getElementById('mStock').innerText = activeP.stock;
+  document.getElementById('mPrice').innerText = "Rs. " + activeP.price;
+  document.getElementById('mSize').innerHTML = activeP.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+  document.getElementById('productModal').style.display = 'block';
 }
 
 function addToCart() {
-  const p = PRODUCTS.find(x => x.id === currentPid);
-  const size = document.getElementById('sizeSelect').value;
-  cart.push({ ...p, selectedSize: size });
-  updateCartCount();
-  closeModal();
-  alert(`${p.name} added to cart!`);
+  const size = document.getElementById('mSize').value;
+  cart.push({...activeP, selectedSize: size});
+  updateCart();
+  closeModals();
 }
 
-function updateCartCount() {
+function updateCart() {
   document.getElementById('cartCount').innerText = cart.length;
 }
 
 function openCart() {
-  if(cart.length === 0) return alert("Cart is empty!");
-  const list = document.getElementById('cartItemsList');
-  list.innerHTML = cart.map((item, idx) => `
-    <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
-      <span>${item.name} (${item.selectedSize})</span>
-      <span>Rs. ${item.price} <button onclick="removeFromCart(${idx})" style="color:red; background:none; border:none; cursor:pointer;">x</button></span>
+  if(cart.length === 0) return alert("Cart is empty");
+  const list = document.getElementById('cartList');
+  list.innerHTML = cart.map(item => `
+    <div class="cart-item">
+      <img src="${item.img}">
+      <div>
+        <strong>${item.name}</strong><br>
+        Size: ${item.selectedSize} - Rs. ${item.price}
+      </div>
     </div>
   `).join('');
-  document.getElementById('checkoutModal').classList.add('active');
+  document.getElementById('cartModal').style.display = 'block';
 }
 
-function removeFromCart(index) {
-  cart.splice(index, 1);
-  updateCartCount();
-  if(cart.length === 0) document.getElementById('checkoutModal').classList.remove('active');
-  else openCart();
+function togglePaymentInfo() {
+  const method = document.getElementById('payMethod').value;
+  const box = document.getElementById('paymentInfo');
+  if(method) {
+    box.style.display = 'block';
+    document.getElementById('payDetails').innerText = "Transfer to: " + ACCOUNT_DETAILS[method];
+  } else {
+    box.style.display = 'none';
+  }
 }
 
-// --- WHATSAPP ORDER LOGIC ---
-function sendWhatsAppOrder() {
-  const name = document.getElementById('firstName').value;
-  const phone = document.getElementById('phone').value;
-  const addr = document.getElementById('address').value;
-
-  if(!name || !phone || !addr) return alert("Please fill all details");
-
-  let itemsText = cart.map(item => `- ${item.name} (${item.selectedSize}): Rs.${item.price}`).join('%0A');
-  let total = cart.reduce((sum, item) => sum + item.price, 0);
-
-  // Structured message for WhatsApp
-  let message = `*NEW ORDER - WAVIALL*%0A%0A` +
-                `*Customer:* ${name}%0A` +
-                `*Phone:* ${phone}%0A` +
-                `*Address:* ${addr}%0A%0A` +
-                `*Items:*%0A${itemsText}%0A%0A` +
-                `*Total:* Rs. ${total}%0A%0A` +
-                `_Please send payment details for Online Transfer._`;
-
-  window.open(`https://wa.me/${MY_PHONE_NUMBER}?text=${message}`, '_blank');
-  
-  // Clear cart after redirect
-  cart = [];
-  updateCartCount();
-  document.getElementById('checkoutModal').classList.remove('active');
+function closeModals() {
+  document.getElementById('productModal').style.display = 'none';
+  document.getElementById('cartModal').style.display = 'none';
 }
 
-window.onload = renderProducts;
+// --- FORMSPREE SUBMISSION ---
+document.getElementById('orderForm').onsubmit = async (e) => {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.innerText = "Processing...";
+  btn.disabled = true;
+
+  const formData = new FormData(e.target);
+  formData.append("Order_Details", cart.map(i => `${i.name} (${i.selectedSize})`).join(", "));
+  formData.append("Total_Bill", cart.reduce((sum, i) => sum + i.price, 0));
+
+  try {
+    const response = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      method: 'POST',
+      body: formData,
+      headers: { 'Accept': 'application/json' }
+    });
+    if (response.ok) {
+      alert("Order Received! Send your screenshot to waviall@gmail.com to confirm.");
+      cart = [];
+      updateCart();
+      closeModals();
+      e.target.reset();
+    }
+  } catch (err) {
+    alert("Error sending order. Try again.");
+  }
+  btn.innerText = "Complete Order";
+  btn.disabled = false;
+};
+
+render();
 </script>
-
 </body>
 </html>
